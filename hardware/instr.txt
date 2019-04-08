@@ -1,0 +1,84 @@
+blkdim r0, r0, $0
+blkidx r1, r1, $0
+
+# blockDim * blockID
+mul r1, r1, r0
+
+# threadID
+tidx r2, r0, $0
+
+# now r0 holds global invocation id
+add r0, r1, r2
+# Live r0
+
+# Now get x
+lli_i r1, $255
+
+and r1, r1, r0
+# r1 holds x
+
+shr r2, r0, $8
+# r2 holds y
+
+# Calculate delta between center (128. 128)
+subi r3, r1, $128
+subi r4, r2, $128
+
+# r63 holds 0
+xor r63, r63, r63
+
+# abs r3
+cmple_i r62, r3, r63
+if r62, r0, $0
+sub r3, r63, r3
+endif r62, r62, $0
+
+# abs r4
+cmple_i r62, r4, r63
+if r62, r0, $0
+sub r4, r63, r4
+endif r62, r62, $0
+
+
+# Distance
+# dx^2
+# mul r3, r3, r3
+# dy^2
+# mul r4, r4, r4
+
+# Added dx ^ 2 + dy ^ 2
+add r5, r3, r4
+
+# Load radius
+lli_i r6, $100
+
+# Smaller
+cmple_i r7, r5, r6
+
+
+# Clear r9
+xor r9, r9, r9
+# R9 now 0xffffffff
+subi r9, r9, $1
+
+# shift r0 to get address
+shl r0, r0, $2
+
+# Exit if larger 
+
+if r7, r7, $0
+# greater than radius 100 now masked out
+
+# Store it!
+st_i r0, r9, $0
+
+exit r0, r0, $0
+
+# else r0, r0, $0
+
+# exit r0, r0, $0
+# st_i r0, r9, $0
+
+endif r7, r7, $0
+
+exit r0, r0, $0

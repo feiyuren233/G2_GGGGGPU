@@ -1,0 +1,38 @@
+blkdim r0, r0, $0
+blkidx r1, r1, $0
+
+# blockDim * blockID
+mul r1, r1, r0
+
+# threadID
+tidx r2, r0, $0
+
+# now r0 holds global invocation id
+add r0, r1, r2
+# Live r0
+
+# Now get x
+lli_i r1, $255
+
+and r1, r1, r0
+# r1 holds x
+
+shr r2, r0, $8
+# r2 holds y
+
+lli_i r6, $8
+
+cmple_i r7, r1, r6
+
+exit r7, r7, $0
+# greater than radius 100 now masked out
+
+xor r9, r9, r9
+subi r9, r9, $1
+
+st_i r0, r9, $0
+
+int b = 12;
+int a = b >> 2;
+
+
